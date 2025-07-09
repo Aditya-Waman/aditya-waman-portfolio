@@ -40,9 +40,9 @@ const Hero = () => {
               initial={{ scale: 0 }}
               animate={{ scale: 1, opacity: isHovered ? 0 : 1 }}
               transition={{ scale: { duration: 0.8, delay: 0.2 }, opacity: { duration: 1.5, ease: "easeInOut" } }}
-              src="/spiderman-hd-4k-superheroes-wallpaper-preview.jpg"
+              src="/aditya.jpg"
               alt="Profile"
-              className="w-48 h-48 md:w-56 md:h-56 rounded-full border-4 border-blue-400 shadow-2xl mx-auto mb-6 cursor-pointer"
+              className="w-64 h-64 md:w-80 md:h-80 rounded-full border-4 border-blue-400 shadow-2xl mx-auto mb-6 cursor-pointer object-cover object-center"
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             />
