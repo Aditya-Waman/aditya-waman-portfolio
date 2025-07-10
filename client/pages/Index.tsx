@@ -4,6 +4,7 @@ import Hero from "../components/Hero";
 import About from "../components/About";
 import Skills from "../components/Skills";
 import Projects from "../components/Projects";
+import Certifications from "../components/Certifications";
 import Contact from "../components/Contact";
 
 export default function Index() {
@@ -17,6 +18,7 @@ export default function Index() {
         <About />
         <Skills />
         <Projects />
+        <Certifications />
 
         {/* Resume Section Placeholder */}
         <section id="resume" className="py-20 relative">

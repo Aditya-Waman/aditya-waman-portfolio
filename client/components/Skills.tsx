@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useInView } from "../hooks/useInView";
+import Tilt from 'react-parallax-tilt';
 
 const Skills = () => {
   const ref = useRef(null);
@@ -67,54 +68,65 @@ const Skills = () => {
 
         <div className="grid md:grid-cols-3 gap-8">
           {skillCategories.map((category, categoryIndex) => (
-            <motion.div
+            <Tilt
               key={category.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.8, delay: categoryIndex * 0.2 }}
-              className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700"
+              glareEnable={true}
+              glareMaxOpacity={0.25}
+              scale={1.04}
+              transitionSpeed={1500}
+              tiltMaxAngleX={15}
+              tiltMaxAngleY={15}
+              className="rounded-xl"
             >
-              <h3 className="text-xl font-semibold text-white mb-6 text-center">
-                {category.title}
-              </h3>
-              <div className="space-y-4">
-                {category.skills.map((skill, skillIndex) => (
-                  <motion.div
-                    key={skill.name}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={
-                      isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }
-                    }
-                    transition={{
-                      duration: 0.6,
-                      delay: categoryIndex * 0.2 + skillIndex * 0.1,
-                    }}
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-gray-300 font-medium">
-                        {skill.name}
-                      </span>
-                      <span className="text-blue-400 text-sm font-semibold">
-                        {skill.level}%
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={
-                          isInView ? { width: `${skill.level}%` } : { width: 0 }
-                        }
-                        transition={{
-                          duration: 1.5,
-                          delay: categoryIndex * 0.2 + skillIndex * 0.1 + 0.5,
-                        }}
-                        className="h-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.8, delay: categoryIndex * 0.2 }}
+                className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700"
+                whileHover={{ scale: 1.04, boxShadow: '0 8px 32px 0 rgba(80,80,255,0.25)' }}
+              >
+                <h3 className="text-xl font-semibold text-white mb-6 text-center">
+                  {category.title}
+                </h3>
+                <div className="space-y-4">
+                  {category.skills.map((skill, skillIndex) => (
+                    <motion.div
+                      key={skill.name}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={
+                        isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -20 }
+                      }
+                      transition={{
+                        duration: 0.6,
+                        delay: categoryIndex * 0.2 + skillIndex * 0.1,
+                      }}
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-gray-300 font-medium">
+                          {skill.name}
+                        </span>
+                        <span className="text-blue-400 text-sm font-semibold">
+                          {skill.level}%
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-700 rounded-full h-2">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={
+                            isInView ? { width: `${skill.level}%` } : { width: 0 }
+                          }
+                          transition={{
+                            duration: 1.5,
+                            delay: categoryIndex * 0.2 + skillIndex * 0.1 + 0.5,
+                          }}
+                          className="h-2 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"
+                        />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+            </Tilt>
           ))}
         </div>
 

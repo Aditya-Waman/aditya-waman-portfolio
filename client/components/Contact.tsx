@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useRef, useState } from "react";
-import { Mail, MapPin, Phone, Send } from "lucide-react";
+import { Mail, MapPin, Phone, Send, CheckCircle } from "lucide-react";
 import { useInView } from "../hooks/useInView";
 
 const Contact = () => {
@@ -12,6 +12,9 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  const [messageSent, setMessageSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const contactInfo = [
     {
@@ -41,6 +44,30 @@ const Contact = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    setError("");
+    try {
+      const response = await fetch("https://formspree.io/f/mnnvkrvo", {
+        method: "POST",
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(e.currentTarget),
+      });
+      const data = await response.json();
+      if (data.ok || response.ok) {
+        setMessageSent(true);
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      } else {
+        setError("Failed to send message. Please try again later.");
+      }
+    } catch (err) {
+      setError("Failed to send message. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -137,91 +164,111 @@ const Contact = () => {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-8 border border-gray-700"
           >
-            <form action="https://formspree.io/f/mnnvkrvo" method="POST" className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
+            {messageSent ? (
+              <div className="flex flex-col items-center justify-center py-12">
+                <CheckCircle size={48} className="text-green-400 mb-4" />
+                <h4 className="text-2xl font-bold text-white mb-2">Message Sent!</h4>
+                <p className="text-gray-300">Thank you for reaching out. I'll get back to you soon.</p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-300 mb-2"
+                    >
+                      Your Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      name="name"
+                      required
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      placeholder="Your Name"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-300 mb-2"
+                    >
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                      placeholder="Your@email.com"
+                    />
+                  </div>
+                </div>
                 <div>
                   <label
-                    htmlFor="name"
+                    htmlFor="subject"
                     className="block text-sm font-medium text-gray-300 mb-2"
                   >
-                    Your Name
+                    Subject
                   </label>
                   <input
                     type="text"
-                    id="name"
-                    name="name"
+                    id="subject"
+                    name="subject"
                     required
+                    value={formData.subject}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    placeholder="Your Name"
+                    placeholder="Project Collaboration"
                   />
                 </div>
                 <div>
                   <label
-                    htmlFor="email"
+                    htmlFor="message"
                     className="block text-sm font-medium text-gray-300 mb-2"
                   >
-                    Email Address
+                    Message
                   </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
+                  <textarea
+                    id="message"
+                    name="message"
                     required
+                    value={formData.message}
+                    onChange={handleChange}
                     className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                    placeholder="Your@email.com"
+                    placeholder="Your message..."
+                    rows={5}
                   />
                 </div>
-              </div>
-
-              <div>
-                <label
-                  htmlFor="subject"
-                  className="block text-sm font-medium text-gray-300 mb-2"
+                {/* Honeypot field for spam protection */}
+                <div style={{ display: 'none' }} aria-hidden="true">
+                  <input type="text" name="website" tabIndex={-1} autoComplete="off" />
+                </div>
+                {error && <div className="text-red-400 text-sm">{error}</div>}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  type="submit"
+                  disabled={loading}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 disabled:opacity-60"
                 >
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  name="subject"
-                  required
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  placeholder="Project Collaboration"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-gray-300 mb-2"
-                >
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  name="message"
-                  required
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  placeholder="Your message..."
-                  rows={5}
-                />
-              </div>
-
-              {/* Honeypot field for spam protection */}
-              <div style={{ display: 'none' }} aria-hidden="true">
-                <input type="text" name="website" tabIndex={-1} autoComplete="off" />
-              </div>
-
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                className="w-full px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-300 flex items-center justify-center space-x-2"
-              >
-                <Send size={18} />
-                <span>Send Message</span>
-              </motion.button>
-            </form>
+                  {loading ? (
+                    <span>Sending...</span>
+                  ) : (
+                    <>
+                      <Send size={18} />
+                      <span>Send Message</span>
+                    </>
+                  )}
+                </motion.button>
+              </form>
+            )}
           </motion.div>
         </div>
       </div>

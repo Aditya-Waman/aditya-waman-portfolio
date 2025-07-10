@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import { useInView } from "../hooks/useInView";
+import Tilt from 'react-parallax-tilt';
 
 const Projects = () => {
   const ref = useRef(null);
@@ -54,34 +55,43 @@ const Projects = () => {
             Here are some of the projects I've worked on
           </p>
         </motion.div>
-
         <div className="grid md:grid-cols-2 gap-6">
           {projects.map((project, index) => (
-            <motion.div
+            <Tilt
               key={project.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              whileHover={{ y: -5, scale: 1.02 }}
-              className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300"
+              glareEnable={true}
+              glareMaxOpacity={0.25}
+              scale={1.04}
+              transitionSpeed={1500}
+              tiltMaxAngleX={15}
+              tiltMaxAngleY={15}
+              className="rounded-xl"
             >
-              <h3 className="text-xl font-semibold text-white mb-3">
-                {project.title}
-              </h3>
-              <p className="text-gray-300 text-sm mb-4 leading-relaxed">
-                {project.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {project.technologies.map((tech) => (
-                  <span
-                    key={tech}
-                    className="px-3 py-1 bg-gray-700/50 text-blue-400 rounded-full text-xs font-medium border border-gray-600/50"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                whileHover={{ y: -5, scale: 1.02, boxShadow: '0 8px 32px 0 rgba(80,80,255,0.25)' }}
+                className="bg-gray-800/40 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50 hover:border-blue-500/50 transition-all duration-300"
+              >
+                <h3 className="text-xl font-semibold text-white mb-3">
+                  {project.title}
+                </h3>
+                <p className="text-gray-300 text-sm mb-4 leading-relaxed">
+                  {project.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {project.technologies.map((tech) => (
+                    <span
+                      key={tech}
+                      className="px-3 py-1 bg-gray-700/50 text-blue-400 rounded-full text-xs font-medium border border-gray-600/50"
+                    >
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            </Tilt>
           ))}
         </div>
       </div>
