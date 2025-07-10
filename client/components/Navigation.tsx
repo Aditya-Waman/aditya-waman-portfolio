@@ -41,11 +41,21 @@ const Navigation = () => {
   }, []);
 
   const scrollToSection = (href: string) => {
+    console.log('scrollToSection called with:', href);
     const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-    setIsMenuOpen(false);
+    setIsMenuOpen(false); // Close menu first
+    setTimeout(() => {
+      if (element) {
+        console.log('Element found for', href, element);
+        // Dynamically get navbar height for offset
+        const navbar = document.querySelector('nav');
+        const yOffset = navbar ? -navbar.offsetHeight : -96;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      } else {
+        console.warn('No element found for', href);
+      }
+    }, 250); // Wait for menu to close/animate
   };
 
   const navVariants = {
